@@ -3,21 +3,21 @@ Author(s): Soham Mandal, Trina Dey
 Date: 20 Mar 2021
 
 
-##Given
+## Given
 1. a text file AFINN.txt comprising of sentiments with score  
 2. a json file melbGrid.json comprising of Melbourne lat lng divided into a grid of cells  
 3. a tiny, small json file containing json data of tweets to test on local and a big json file to test on SPARTAN  
 
 **Note**: big json file not to be run on local and also to be run on SPARTAN precisely thrice as per specification given. Also big json files contains many cities apart from Melbourne 
 
-##Problem Statement  
+## Problem Statement  
 1. Analyse the sentiment score of each cell area in the grid defined melbgrid.json by parsing tweet files and publish the results  
 2. Analyse the performance time of running the program on  
     - 1 node 1 core
 	- 1 node 8 core
 	- 2 nodes 8 core (4 core each)
 
-##Use Cases & Scenarios 
+## Use Cases & Scenarios 
 1. the sentiment defined should match exactly as a word with only punctuations marks allowed at the end of the word (not beginning) [! , ? . ' "] - which means the regex is like [word][!,?.'"] example - abandon[!,.?'"]*$ matches abandon. abandon! but not abandoing or abandon#
 2. big json file contains cities apart from melbourne as well that means check on lat lng bounds required.
 3. multiple words can match up in a sentence, so add up the sentiment score accordingly
@@ -27,7 +27,7 @@ Date: 20 Mar 2021
 7. application should return final result and time to run the job itself avoiding queueing time.
 8. Not mentioned in the assignment pdf but mentioned in one of the lectures and key to optimization is that we should read files in chunks insetad of loading the whole in the memory.
 
-###Deliverable of the Assignment - due on 13th April
+## Deliverable of the Assignment - due on 13th April
 1. Report- 4 pages and less comprising of following things -
     - scripts used for submitting job to SPARTAN
 	- approach to parallelize the code
@@ -37,11 +37,11 @@ Date: 20 Mar 2021
 2. Working Demo - comprising of program. 
 
 
-###Open Questions
+## Open Questions
 1. how do we read files in chunks ? Will File Pointers do?
 2. how does program knows how many core and nodes and how to distribute
 
-###Program Flow
+## Program Flow
 1. load AFINN.txt and save into dictionary 
 2. load melbGrid.json create list of objects for lat lng
 3. function to load files part by part 
@@ -55,7 +55,7 @@ Date: 20 Mar 2021
 11. Added Bonus - Unit Test Cases 
 
 
-###Deadlines
+## Deadlines
 | Tasks          | Owner         | Date        |
 | -------------- |:-------------:| -----------:|
 | #1 and #2      | Soham M       | 25 Mar 2021 |
