@@ -1,16 +1,16 @@
-# This code processes the file AFINN.txt
+# This code processes the file AFINN.txt into a funtion read_sentiment()
 # Issue : 
 # AFINN.txt file has multiple white spaces in b/w sentiment and score which throws --> ValueError for split()
 # Solution:
 
 # Steps                       *****CLEAN FILE*****
-''' 1. use split() default case  is " " jointly and replace with ','  generate --> clean.txt
-    2. Read clean.txt to py dictionary word_file:
+''' 1. Read File -> use split() default case  is " " jointly and replace with ','  generate --> clean
+    2. Read clean to py dictionary word_file:
        map [key, value] as [sentiment, score]      
 '''
-# AFINN.txt -----> clean.txt ------> python dictionary                    constraint: 
+# AFINN.txt -----> clean ------> python dictionary             
 '''                      
-********************************************************************************************************************************'''
+***********************************************************************************************************'''
 
 # Step 1 Clean the file from multiple spaces
 
@@ -22,12 +22,12 @@ def read_sentiment():
     word_store = {}
 
     with open(raw_file, "rt") as file_in:
-    # clean_File = open("clean.txt", "wt")  
+      
         pattern = '([a-zA-Z])\s([a-zA-Z])'
 
 
         for line in file_in:
-            # clean_File.write(' '.join(line.split())+'\n')
+            
             s = (' '.join(line.split()))
             s = re.sub(pattern,"-",s)
             s = s.strip()
