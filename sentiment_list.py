@@ -8,39 +8,25 @@
     2. Read clean to py dictionary word_file:
        map [key, value] as [sentiment, score]      
 '''
-# AFINN.txt -----> clean ------> python dictionary             
+
 '''                      
 ***********************************************************************************************************'''
-
-# Step 1 Clean the file from multiple spaces
-
-import re
 
 def read_sentiment():
 
     raw_file = "AFINN.txt"
     word_store = {}
     
-    with open(raw_file, "rt") as file_in:
-    # clean_File = open("clean.txt", "wt")  
-        pattern = '([a-zA-Z])\s([a-zA-Z])'
-        
-
+    with open(raw_file, "r") as file_in:
         for line in file_in:
-            # clean_File.write(' '.join(line.split())+'\n')
-            s = (' '.join(line.split()))
-            s = re.sub(pattern,"-",s)
-            s = s.strip()
-            alist = s.split()
+            s = line.replace("\t","#^#")
+            alist = s.split("#^#")
             word_store[alist[0]] = int(alist[1])
-
-    print(word_store)
-    # total = word_store.keys()
-    # print(total)
     return word_store
 
 
-read_sentiment()
+words = read_sentiment()
+print(words)
 
 
 

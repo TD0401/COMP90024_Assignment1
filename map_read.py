@@ -7,9 +7,8 @@ def melb_grid():
         grid_dict = {}
         for item in obj['features']:
             id = item['properties']['id']
-            co_ord = item['geometry']['coordinates']
-            for value in co_ord:
-                grid_dict[id] = {'id': id, 'coordinates': value, 'score': 0 }
+            grid_dict[id] = item['properties']
+            grid_dict[id]['score'] = 0
         print(str(grid_dict))
 
 
