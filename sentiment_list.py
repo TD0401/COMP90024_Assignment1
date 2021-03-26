@@ -20,25 +20,27 @@ def read_sentiment():
 
     raw_file = "AFINN.txt"
     word_store = {}
-
+    
     with open(raw_file, "rt") as file_in:
-      
+    # clean_File = open("clean.txt", "wt")  
         pattern = '([a-zA-Z])\s([a-zA-Z])'
-
+        
 
         for line in file_in:
-            
+            # clean_File.write(' '.join(line.split())+'\n')
             s = (' '.join(line.split()))
             s = re.sub(pattern,"-",s)
             s = s.strip()
             alist = s.split()
-            word_store[alist[0]] = alist[1]
+            word_store[alist[0]] = int(alist[1])
 
     print(word_store)
+    # total = word_store.keys()
+    # print(total)
     return word_store
-    
 
 
+read_sentiment()
 
 
 
