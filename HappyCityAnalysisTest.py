@@ -59,7 +59,7 @@ def test_find_grid_cell2():
     R = [0, -3]
     S = [3, -1.5]
     T = [1.5, 1.5]
-    X = [-1.5, -4.5]
+    X = [0, -4.5]
 
     #points inside cells -- fine
     U = [1.2, -1.2]

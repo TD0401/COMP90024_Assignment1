@@ -87,6 +87,7 @@ def find_cell_id(lat,lng, map_grid):
         #within cell
         if lng > coord['xmin'] and lng < coord['xmax'] and lat > coord['ymin']  and lat < coord['ymax']:
             cell_id = coord['id']
+            return cell_id
 
         # on vertical bounds go left
         if lng == coord['xmax'] and lat >= coord['ymin']  and lat <= coord['ymax']:
