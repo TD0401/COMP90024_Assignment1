@@ -92,5 +92,8 @@ def test_find_grid_cell2():
     assert find_cell_id(Y[1], Y[0], map) == 'C13'
     assert find_cell_id(Z[1], Z[0], map) == 'C13'
 
+    #outside grid
+    assert find_cell_id(-7,8, map) == ''
+
 
 

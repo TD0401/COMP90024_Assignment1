@@ -1,5 +1,19 @@
 import json
 import os
+import re
+
+def get_score(sentiment, tweet_line):
+    temp_score = 0
+    try:
+        for i in sentiment.keys():
+            patter = "(" + i + ")[!,.?'\"]*[\s]*"
+            x = re.findall(patter, tweet_line.lower())
+            if len(x) > 0:
+                temp_score = temp_score + sentiment[i] * len(x)
+    except:
+        print("not working", i)
+    return temp_score
+
 
 
 def read_sentiment():
@@ -8,10 +22,11 @@ def read_sentiment():
 
     with open(raw_file, "r") as file_in:
         for line in file_in:
-            s = line.replace("\t", "#^#")
-            alist = s.split("#^#")
-            word_store[alist[0]] = int(alist[1])
+            #s = line.replace("\t", "#^#")
+            alist = line.split("\t")
+            word_store[alist[0].lower()] = int(alist[1])
     return word_store
+
 
 def melb_grid():
     grid_dict = {}
@@ -21,6 +36,7 @@ def melb_grid():
             id = item['properties']['id']
             grid_dict[id] = item['properties']
             grid_dict[id]['score'] = 0
+            grid_dict[id]['count'] = 0
 
     return grid_dict
 
@@ -40,7 +56,7 @@ def melb_grid():
 """
 
 
-def read_files(file_ptr, file_size, map_grid,sentiment_dict, start_index=0, size_byte=10000 ):
+def read_files(file_ptr, file_size, map_grid,sentiment_dict, start_index=0, size_byte=100000 ):
     try:
         file_ptr.seek(start_index)
         lines = file_ptr.readlines(size_byte)
@@ -72,11 +88,15 @@ def parse_json(line, map_grid,sentiment_dict):
     tweet_lat = data["doc"]["coordinates"]["coordinates"][1]
     tweet_text = data["doc"]["text"]
     cellId = find_cell_id(tweet_lat, tweet_lng, map_grid)
-    print("tweet_lat: " + str(tweet_lat) + ", tweet_lng: " + str(tweet_lng) + " , cellId:" + cellId)
+    #print("tweet_lat: " + str(tweet_lat) + ", tweet_lng: " + str(tweet_lng) + " , cellId:" + cellId)
     if cellId != '':
-        print('write cell score here')
+        score = get_score(sentiment_dict, tweet_text)
+        map_grid[cellId]['score'] += score
+        map_grid[cellId]['count'] += 1
+        #print('write cell score here')
         #score = getScore(text)
         #addDataToCellList(cellId, score)
+        #print(map_grid[cellId])
 
 
 def find_cell_id(lat,lng, map_grid):
@@ -115,14 +135,20 @@ def find_cell_id(lat,lng, map_grid):
 def main():
     sentiment_dict = read_sentiment()
     map_grid = melb_grid()
-    file_name= "tinyTwitter.json"
+    file_name = "tempJson.json"
     with open(file_name, "rb") as file:
         file_size = os.path.getsize(file_name)
         curr_index = file.tell()
         while curr_index < file_size:
+            print('file parsed with pointer' , curr_index)
             #parallelize read files get output, reduce it
             read_files(file, file_size,  map_grid,sentiment_dict , curr_index)
             curr_index = file.tell()
+    print(map_grid)
 
 
 main()
+
+
+
+
