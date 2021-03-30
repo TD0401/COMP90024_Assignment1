@@ -56,18 +56,18 @@ Date: 20 Mar 2021
 
 
 ## Deadlines
-| Tasks          | Owner         | Date        |
-| -------------- |:-------------:| -----------:|
-| #1 and #2      | Soham M       | 25 Mar 2021 |
-| #3             | Trina D       | 25 Mar 2021 |
-| #4 	#6       | Trina D       | 31 Mar 2021 |
-| # 5		     | Soham M       | 31 Mar 2021 |
-| #7 #8          | Soham M       | 05 Apr 2021 |
-| #9.            | Trina D       | 05 Apr 2021 |
-| #10            | Soham M       | 11 Apr 2021 |
-| Run on Spartan | undefined     | 07 Apr 2021 |
-| Report         | undefined     | 12 Apr 2021 |
-| #11            | Trina & Soham | 12 Apr 2021 |
+| Tasks          | Owner         | Date        | Status	|
+| -------------- |:-------------:| -----------:|-------:|
+| #1 and #2      | Soham M       | 25 Mar 2021 |Done	|
+| #3             | Trina D       | 25 Mar 2021 |Done	|
+| #4 	#6       | Trina D       | 31 Mar 2021 |Done	|
+| # 5		 | Soham M       | 31 Mar 2021 |Done	|
+| #7 #8          | Soham M       | 05 Apr 2021 |Pending	|
+| #9.            | Trina D       | 05 Apr 2021 |Pending	|
+| #10            | Soham M       | 11 Apr 2021 |Pending	|
+| Run on Spartan | undefined     | 07 Apr 2021 |Pending	|
+| Report         | undefined     | 12 Apr 2021 |Pending	|
+| #11            | Trina & Soham | 12 Apr 2021 |Pending	|
 
 ##Grid logic test
 The coordinate system is given by (x,y) however in terms of lat lng coordinates usually now its written as (lng, lat)
