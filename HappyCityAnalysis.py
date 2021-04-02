@@ -1,6 +1,8 @@
 import json
-import os
 import re
+from itertools import islice
+from mpi4py import MPI
+
 
 def get_score(sentiment, tweet_line):
     temp_score = 0
@@ -15,14 +17,12 @@ def get_score(sentiment, tweet_line):
     return temp_score
 
 
-
 def read_sentiment():
     raw_file = "AFINN.txt"
     word_store = {}
 
     with open(raw_file, "r") as file_in:
         for line in file_in:
-            #s = line.replace("\t", "#^#")
             alist = line.split("\t")
             word_store[alist[0].lower()] = int(alist[1])
     return word_store
@@ -56,31 +56,30 @@ def melb_grid():
 """
 
 
-def read_files(file_ptr, file_size, map_grid,sentiment_dict, start_index=0, size_byte=100000 ):
+def read_files(map_grid, sentiment_dict, start_index, increment):
     try:
-        file_ptr.seek(start_index)
-        lines = file_ptr.readlines(size_byte)
-        first_line = False
-        num_lines = len(lines)
-        count_lines = 0
-        for line in lines:
-            count_lines = count_lines + 1
-            try:
-                # not reading first line
-                if start_index == 0 and not first_line:
-                    first_line = True
-                # not reading last line, parse all json in between
-                elif file_ptr.tell() < file_size or count_lines < num_lines:
-                    parse_json(line, map_grid,sentiment_dict)
-            except:
-                print("error in parsing particular line")
+        file_name = "tempJson.json"
+        with open(file_name, "r") as file:
+            lines = list(islice(file, start_index, start_index + increment))
+            num_lines = len(lines)
+            count = 0
+            for line in lines:
+                count = count + 1
+                try:
+                    line = line.replace("\n", "").replace("\r", "")
+                    # not reading first line
+                    # not reading last line, parse all json in between
+                    if not (start_index == 0 and count == 1) and not line == "]}":
+                        parse_json(line, map_grid, sentiment_dict)
+                except:
+                    print("error in parsing particular line: ", line)
+
 
     except:
         print("Error in reading file and parsing data")
 
 
-def parse_json(line, map_grid,sentiment_dict):
-    decoded_line = line.decode("UTF-8").replace("\n", "").replace("\r","")
+def parse_json(decoded_line, map_grid,sentiment_dict):
     if decoded_line.endswith(","):
         decoded_line = decoded_line[:-1]
     data = json.loads(decoded_line)
@@ -93,10 +92,7 @@ def parse_json(line, map_grid,sentiment_dict):
         score = get_score(sentiment_dict, tweet_text)
         map_grid[cellId]['score'] += score
         map_grid[cellId]['count'] += 1
-        #print('write cell score here')
-        #score = getScore(text)
-        #addDataToCellList(cellId, score)
-        #print(map_grid[cellId])
+
 
 
 def find_cell_id(lat,lng, map_grid):
@@ -125,6 +121,16 @@ def find_cell_id(lat,lng, map_grid):
     return cell_id
 
 
+def merge_final_map(recvd_data):
+    final_map = {}
+    for perArr in recvd_data:
+        for key in perArr.keys():
+            if key not in final_map:
+                final_map[key] = perArr[key]
+            else:
+                final_map[key]['score'] += perArr[key]['score']
+                final_map[key]['count'] += perArr[key]['count']
+    print(final_map)
 
 """ TODO: 1. open file and iterate until eof is found
           2. in read file set the seek to the starting offset, read the lines, parse into json and take out selective data 
@@ -133,18 +139,26 @@ def find_cell_id(lat,lng, map_grid):
           5. while parsing ignore first and last line  -- write a parse json function
 """
 def main():
-    sentiment_dict = read_sentiment()
-    map_grid = melb_grid()
-    file_name = "tempJson.json"
-    with open(file_name, "rb") as file:
-        file_size = os.path.getsize(file_name)
-        curr_index = file.tell()
-        while curr_index < file_size:
-            print('file parsed with pointer' , curr_index)
-            #parallelize read files get output, reduce it
-            read_files(file, file_size,  map_grid,sentiment_dict , curr_index)
-            curr_index = file.tell()
-    print(map_grid)
+    comm= MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+    send_data = None
+    process_data = None
+    recv_data = None
+    line_size = 250
+    if rank == 0:
+        sentiment_dict = read_sentiment()
+        map_grid = melb_grid()
+        send_data = {'melb_grid':map_grid , 'sentiment':sentiment_dict}
+
+    send_data = comm.bcast(send_data, root=0)
+    read_files(send_data['melb_grid'],send_data['sentiment'],  rank*line_size,line_size)
+    process_data = send_data['melb_grid']
+    recv_data = comm.gather(process_data, root=0)
+    final_map= None
+    if rank == 0:
+        final_map = merge_final_map(recv_data)
+
 
 
 main()

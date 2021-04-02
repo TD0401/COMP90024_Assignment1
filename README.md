@@ -118,5 +118,17 @@ As per this we have tested against the below points. To run the test do this
 |   W           | ( -1.5,-4.5)   |   C15     |
 |   X           | (  0.0,-4.5)   |   C15     |
 |   Y           | ( -1.0, 1.5)   |   C13     |
-|   Z           |  ( 0.0, 3.0)  |   C13     |
+|   Z           |  ( 0.0, 3.0)   |   C13     |
+
+
+## MPI 
+
+- To run the program run on terminal mpirun -n 4 python HappyCityAnalysis.py   
+- there is a dummy file just so you can understand the flow or sequence of calls  
+- comm = MPI.COMM_WORLD returns the comm object  
+- rank and size are fetched. we will use them to determine startindex and lines to read in chunk wise file  
+- we read the melbgrid and sentiment score only once and broadcast to all other processes  
+- the broadcast function is blocking meaning if one processes emitting data, others will block until data received  
+- we then process the files in each process forked by mpi  
+- the gather function gathers all the data and combines to create a final map
 
