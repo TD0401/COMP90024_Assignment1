@@ -61,9 +61,9 @@ Date: 20 Mar 2021
 | #1 and #2      | Soham M       | 25 Mar 2021 |Done	|
 | #3             | Trina D       | 25 Mar 2021 |Done	|
 | #4 	#6       | Trina D       | 31 Mar 2021 |Done	|
-| # 5		 | Soham M       | 31 Mar 2021 |Done	|
-| #7 #8          | Soham M       | 05 Apr 2021 |Pending	|
-| #9.            | Trina D       | 05 Apr 2021 |Pending	|
+| # 5		     | Soham M       | 31 Mar 2021 |Done	|
+| #7 #8          | Soham M       | 05 Apr 2021 |Done	|
+| #9.            | Trina D       | 05 Apr 2021 |Done	|
 | #10            | Soham M       | 11 Apr 2021 |Pending	|
 | Run on Spartan | undefined     | 07 Apr 2021 |Pending	|
 | Report         | undefined     | 12 Apr 2021 |Pending	|
