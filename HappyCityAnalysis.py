@@ -1,8 +1,21 @@
+from resource import getrusage as re_use, RUSAGE_SELF
+from time import time as timestamp
 import json
 import re
 from itertools import islice
 from mpi4py import MPI
 
+# init = time.perf_counter()
+def time(function, args=tuple(), krg={}):
+    init, init_re = timestamp(), re_use(RUSAGE_SELF)
+    function(*args, **krg)
+    end_re, end = re_use(RUSAGE_SELF),timestamp()
+
+    return{
+        'real': end - init,
+        'sys' : end_re.ru_stime - init_re.ru_stime,
+        'user': end_re.ru_utime - init_re.ru_utime
+    }
 
 def get_score(sentiment, tweet_line):
     temp_score = 0
@@ -158,6 +171,12 @@ def main():
     final_map= None
     if rank == 0:
         final_map = merge_final_map(recv_data)
+    finalt = time.perf_counter()
+    # print("real:", finalt-init)
+    # print("sys:", )
+    # print("user:", )
+
+    print(time(main))
 
 
 
