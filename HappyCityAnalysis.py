@@ -142,7 +142,14 @@ def main():
         map_grid = melb_grid()
         send_data = {'melb_grid': map_grid, 'sentiment': sentiment_dict, 'sentiment_space': sentiment_dict_space}
     send_data = comm.bcast(send_data, root=0)
-    read_files(send_data['melb_grid'], send_data['sentiment'],send_data['sentiment_space'], rank*line_size, line_size)
+    if size == 1:
+        line_size = int(int(sys.argv[2]) / 8)
+        if int(sys.argv[2]) % 8 != 0:
+            line_size += 1
+        for i in range(0,8):
+            read_files(send_data['melb_grid'], send_data['sentiment'],send_data['sentiment_space'], i*line_size, line_size)
+    else:
+        read_files(send_data['melb_grid'], send_data['sentiment'], send_data['sentiment_space'], rank * line_size,line_size)
     process_data = send_data['melb_grid']
     recv_data = comm.gather(process_data, root=0)
     if rank == 0:
