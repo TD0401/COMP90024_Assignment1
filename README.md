@@ -140,12 +140,16 @@ To run on local we have added below in the shell file
 `count=$(wc -l tempJson.json| awk '{print $1}')  `  
 `time mpirun -n 4 python  HappyCityAnalysis.py tempJson.json $count  `
 
-this will time the run and also provide the count of the json file as a command line arg
+this will time the run and also provide the count of the json file as a command line arg. To run the shell file on your terminal type
+`sh run.sh`
 
 ### SLURM
 on slurm we run the same file except that we do srun instead of mpirun  
 `count=$(wc -l tempJson.json| awk '{print $1}')  `  
 `time srun -n 4 python  HappyCityAnalysis.py tempJson.json $count  `
+
+To run slurm file on terminal write
+`sbatch filename.slurm`
 
 
 
