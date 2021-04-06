@@ -2,6 +2,7 @@ import os
 from itertools import islice
 from mpi4py import MPI
 import json
+import  sys
 
 
 def read_sentiment():
@@ -50,6 +51,8 @@ sendBuf = len(data['melGrid']) + len(data['sentiment'])
 
 recv = comm.gather(sendBuf, root=0)
 print("printing receiving " , recv)
+
+print(sys.argv[2])
 
 
 

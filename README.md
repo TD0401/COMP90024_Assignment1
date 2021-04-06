@@ -132,3 +132,20 @@ As per this we have tested against the below points. To run the test do this
 - we then process the files in each process forked by mpi  
 - the gather function gathers all the data and combines to create a final map
 
+##Command Line Argument - SHELL FILE vs SLURM
+To run our program we need the filename as a command line argument and the no of lines in the file so that we can partition the file and run.
+
+###SHELL FILE  
+To run on local we have added below in the shell file  
+`count=$(wc -l tempJson.json| awk '{print $1}')  `  
+`time mpirun -n 4 python  HappyCityAnalysis.py tempJson.json $count  `
+
+this will time the run and also provide the count of the json file as a command line arg
+
+### SLURM
+on slurm we run the same file except that we do srun instead of mpirun  
+`count=$(wc -l tempJson.json| awk '{print $1}')  `  
+`time srun -n 4 python  HappyCityAnalysis.py tempJson.json $count  `
+
+
+
