@@ -3,7 +3,14 @@ import re
 from itertools import islice
 from mpi4py import MPI
 import sys
-import datetime
+
+''' this function calculates the score of a sentiment based on two logics and return the added sum.
+a. the phrases from dictionary (of size 15) is searched based on regex in the tweet text.
+b. the words from tweet are looked up in the sentiment dictionary 
+
+this makes the overall run count as 15 + words in a tweet which is faster than searching 2700 phrases in each tweet.
+'''
+
 
 def get_score(sentiment, sentiment_space, tweet_line):
     temp_score = 0
@@ -25,6 +32,12 @@ def get_score(sentiment, sentiment_space, tweet_line):
     return temp_score
 
 
+''' this function reads the AFINN.txt file and returns two dictionaries - 
+sentiment_dict - dictionary of words with sentiment score
+sentiment_dict_space - dictionary of phrases with sentient score
+'''
+
+
 def read_sentiment():
     raw_file = "AFINN.txt"
     word_store = {}
@@ -40,6 +53,11 @@ def read_sentiment():
     return word_store, split_word_store
 
 
+''' this function reads the melbGrid.json file and returns 
+the dictionary grid_dict with lat lng coordinates and cell id 
+'''
+
+
 def melb_grid():
     grid_dict = {}
     with open("melbGrid.json", "r") as json2py:
@@ -50,6 +68,13 @@ def melb_grid():
             grid_dict[id]['score'] = 0
             grid_dict[id]['count'] = 0
     return grid_dict
+
+
+''' this function reads the twitter json files from a start index upto end index,
+     parses each line into json
+     fetch the cell id to which the tweet belongs
+     if the cell id found, calculate the score and increment/decrement the cell score
+'''
 
 
 def read_files(map_grid, sentiment_dict, sentiment_dict_space, start_index, increment):
@@ -73,7 +98,12 @@ def read_files(map_grid, sentiment_dict, sentiment_dict_space, start_index, incr
         print("Error in reading file and parsing data")
 
 
-def parse_json(decoded_line, map_grid, sentiment_dict,sentiment_dict_space):
+''' this function parses each tweet json string into json object 
+    and fetches the corrdinates and tweet text
+'''
+
+
+def parse_json(decoded_line, map_grid, sentiment_dict, sentiment_dict_space):
     if decoded_line.endswith(","):
         decoded_line = decoded_line[:-1]
     data = json.loads(decoded_line)
@@ -87,7 +117,15 @@ def parse_json(decoded_line, map_grid, sentiment_dict,sentiment_dict_space):
         map_grid[cell_id]['count'] += 1
 
 
-def find_cell_id(lat,lng, map_grid):
+''' this function find the cell id to which the tweet belongs. 
+    if the tweet belongs within the bound of cells then return the cell id
+    if not then if the tweet belongs to any of the vertical boundary  and a left cell is found return the left cell id
+    if not then if the tweet belongs to any of the horizontal boundary only then return the bottom cell id
+    if the tweet belongs to intersection of 4 cells then keep iterating until you find a left cell. 
+'''
+
+
+def find_cell_id(lat, lng, map_grid):
     cell_id = ''
     prev_ymin = ''
     left_populated = False
@@ -115,6 +153,11 @@ def find_cell_id(lat,lng, map_grid):
     return cell_id
 
 
+''' this function merges the final output from all sub process to a single dictionary of result.
+    Subprocesses returns array of dictionary in comm.gather
+'''
+
+
 def merge_final_map(recvd_data):
     final_map = {}
     for perArr in recvd_data:
@@ -125,6 +168,12 @@ def merge_final_map(recvd_data):
                 final_map[key]['score'] += perArr[key]['score']
                 final_map[key]['count'] += perArr[key]['count']
     return final_map
+
+
+''' main function to initiate MPI object, fetch rank and size,
+    partition the data as per the process rank, send and receive the data from subprocesses
+    using comm.bcast and comm.gather functions.
+'''
 
 
 def main():
@@ -147,14 +196,17 @@ def main():
         if int(sys.argv[2]) % 8 != 0:
             line_size += 1
         for i in range(0,8):
-            read_files(send_data['melb_grid'], send_data['sentiment'],send_data['sentiment_space'], i*line_size, line_size)
+            read_files(send_data['melb_grid'], send_data['sentiment'], send_data['sentiment_space'], i*line_size, line_size)
     else:
-        read_files(send_data['melb_grid'], send_data['sentiment'], send_data['sentiment_space'], rank * line_size,line_size)
+        read_files(send_data['melb_grid'], send_data['sentiment'], send_data['sentiment_space'], rank * line_size, line_size)
     process_data = send_data['melb_grid']
     recv_data = comm.gather(process_data, root=0)
     if rank == 0:
         final_map = merge_final_map(recv_data)
         print(final_map)
+
+
+# calls main method
 
 
 main()

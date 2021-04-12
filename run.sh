@@ -1,3 +1,3 @@
 #!/bin/bash
-count=$(wc -l smallTwitter.json| awk '{print $1}')
-time mpirun -n 1 python  HappyCityAnalysis.py smallTwitter.json $count
+count=$(wc -l tempJson.json| awk '{print $1}')
+time mpirun -n 4 python  HappyCityAnalysis.py tempJson.json $count
