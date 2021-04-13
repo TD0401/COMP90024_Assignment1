@@ -82,7 +82,7 @@ We have 4 scenarios -
 
 Here is the Diagram
 
-![diagram](grid_img_test.png)
+![diagram](resources/grid_img_test.png)
 
 
 As per this we have tested against the below points. To run the test do this   

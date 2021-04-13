@@ -2,7 +2,7 @@
 #SBATCH --partition=snowy
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=8
-#SBATCH --time=0-12:00:00
+#SBATCH --time=0-1:00:00
 
 module purge
 module load foss/2019b
